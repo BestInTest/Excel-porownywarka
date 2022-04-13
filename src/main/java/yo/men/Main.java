@@ -18,10 +18,10 @@ public class Main {
         Scanner sc = new Scanner(System.in);
 
         System.out.println("Podaj lokalizacje pliku bazowego: ");
-        String fileLocation = sc.next();
+        String fileLocation = sc.nextLine();
 
         System.out.println("Podaj lokalizacje pliku do porownania: ");
-        String fileLocation2 = sc.next();
+        String fileLocation2 = sc.nextLine();
 
         FileInputStream file = new FileInputStream(fileLocation);
         Workbook actual = new XSSFWorkbook(file);
