@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Collection;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -96,6 +97,7 @@ public class Main {
                 if (row1.getCell(cellAddr2.getCol(), Row.MissingCellPolicy.CREATE_NULL_AS_BLANK) != null) {
                     Cell cell1 = row1.getCell(cellAddr2.getCol());
                     Data cell1Data = searchData(actualData, data); // Na podstawie zmodyfikowanych danych szukana jest komórka w oryginalnym arkuszu
+
                     if (isModified(data, cell1Data)) {
                         toColor.add(data);
                     }
@@ -106,6 +108,8 @@ public class Main {
                 toColor.add(data);
             }
         }
+        System.out.println("Searching for removed cells...");
+        toColor.addAll(searchRemoved(actualData, modifiedData));
         System.out.println("Detected " + toColor.size() + " modified cells");
 
         if (!toColor.isEmpty()) {
@@ -115,7 +119,13 @@ public class Main {
                 CellReference cellAddr2 = data.getCellAddr();
                 Row row2 = sheet2.getRow(cellAddr2.getRow());
 
-                Cell cell2 = row2.getCell(cellAddr2.getCol());
+                Cell cell2 = row2.getCell(cellAddr2.getCol(), Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+                /*
+                if (cell2 == null) {
+                    row2.createCell(cellAddr2.getCol());
+                    cell2.setCellValue("<Removed>");
+                }
+                */
 
                 CellStyle style = modified.createCellStyle();
                 style.setFillForegroundColor(IndexedColors.RED.getIndex());
@@ -164,6 +174,28 @@ public class Main {
             }
         }
         return toret;
+    }
+
+    private static Collection<? extends Data> searchRemoved(List<Data> data1List, List<Data> data2List) {
+        Collection<Data> diff = new ArrayList<>();
+        for (Data data1 : data1List) {
+            String addr1 = data1.getCellAddr().formatAsString();
+            boolean removed = true;
+            for (Data data2 : data2List) {
+                String addr2 = data2.getCellAddr().formatAsString();
+                if (data1.getSheetIndex() == data2.getSheetIndex()) {
+                    if (addr1.equals(addr2)) {
+                        //diff.add(data2.getCellAddr());
+                        removed = false;
+                        break;
+                    }
+                }
+            }
+            if (removed) {
+                diff.add(data1);
+            }
+        }
+        return diff;
     }
 
     public static class Data {

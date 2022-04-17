@@ -6,7 +6,7 @@
 
     <groupId>yo.men</groupId>
     <artifactId>Excel-porownywarka</artifactId>
-    <version>1.01</version>
+    <version>1.02</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
