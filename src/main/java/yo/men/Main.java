@@ -7,22 +7,26 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Collection;
 
 public class Main {
     public static void main(String[] args) throws IOException {
 
-        Scanner sc = new Scanner(System.in);
+        Console sc = System.console();
+        if (sc == null) {
+            System.err.println("Nie wykryto konsoli");
+            System.exit(1);
+        }
 
         System.out.println("Podaj lokalizacje pliku bazowego: ");
-        String fileLocation = sc.nextLine();
+        String fileLocation = sc.readLine();
 
         System.out.println("Podaj lokalizacje pliku do porownania: ");
-        String fileLocation2 = sc.nextLine();
+        String fileLocation2 = sc.readLine();
 
         FileInputStream file = new FileInputStream(fileLocation);
         Workbook actual = new XSSFWorkbook(file);
