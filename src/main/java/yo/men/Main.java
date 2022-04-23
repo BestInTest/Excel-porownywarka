@@ -28,6 +28,8 @@ public class Main {
         System.out.println("Podaj lokalizacje pliku do porownania: ");
         String fileLocation2 = sc.readLine();
 
+        long startTime = System.currentTimeMillis();
+
         FileInputStream file = new FileInputStream(fileLocation);
         Workbook actual = new XSSFWorkbook(file);
 
@@ -114,7 +116,8 @@ public class Main {
         }
         System.out.println("Searching for removed cells...");
         toColor.addAll(searchRemoved(actualData, modifiedData));
-        System.out.println("Detected " + toColor.size() + " modified cells");
+        long time = System.currentTimeMillis()-startTime;
+        System.out.println("\nDetected " + toColor.size() + " modified cells in " + time + " ms");
 
         if (!toColor.isEmpty()) {
             for (Data data : toColor) {
