@@ -1,32 +1,50 @@
 package yo.men;
 
+import lukfor.progress.TaskService;
+import lukfor.progress.tasks.ITaskRunnable;
+import lukfor.progress.tasks.monitors.ITaskMonitor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Console;
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
-import java.util.Collection;
 
 public class Main {
     public static void main(String[] args) throws IOException {
 
+        String fileLocation;
+        String fileLocation2;
+
         Console sc = System.console();
-        if (sc == null) {
-            System.err.println("Nie wykryto konsoli");
-            System.exit(1);
+        if (sc != null) {
+            System.out.println("Podaj lokalizacje pliku bazowego: ");
+            fileLocation = sc.readLine();
+
+            System.out.println("Podaj lokalizacje pliku do porownania: ");
+            fileLocation2 = sc.readLine();
+        } else {
+            if (args.length > 0 && Arrays.toString(args).contains("--ignore-console")) {
+                System.err.println("Nie wykryto konsoli. Znaki specjalne moga nie dzialac poprawnie\n");
+
+                Scanner scanner = new Scanner(System.in);
+
+                System.out.println("Podaj lokalizacje pliku bazowego: ");
+                fileLocation = scanner.nextLine();
+
+                System.out.println("Podaj lokalizacje pliku do porownania: ");
+                fileLocation2 = scanner.nextLine();
+            } else {
+                JOptionPane.showMessageDialog(null, "Nie wykryto konsoli. Uruchom program z konsoli lub korzystajac ze skryptu uruchamiajacego.", "Blad konsoli | github.com/BestInTest/Excel-porownywarka", JOptionPane.ERROR_MESSAGE);
+                System.exit(1);
+                return;
+            }
         }
-
-        System.out.println("Podaj lokalizacje pliku bazowego: ");
-        String fileLocation = sc.readLine();
-
-        System.out.println("Podaj lokalizacje pliku do porownania: ");
-        String fileLocation2 = sc.readLine();
 
         long startTime = System.currentTimeMillis();
 
@@ -90,30 +108,53 @@ public class Main {
         System.out.println("Comparing...\n");
 
         List<Data> toColor = new ArrayList<>();
-        for (Data data : modifiedData) {
-            Sheet sheet2 = modified.getSheetAt(data.getSheetIndex());
-            CellReference cellAddr2 = data.getCellAddr();
-            Row row2 = sheet2.getRow(cellAddr2.getRow());
-            Cell cell2 = row2.getCell(cellAddr2.getCol());
 
-            Sheet sheet1 = actual.getSheetAt(data.getSheetIndex());
-            Row row1 = sheet1.getRow(cellAddr2.getRow());
+        ITaskRunnable task = new ITaskRunnable() {
 
-            try {
-                if (row1.getCell(cellAddr2.getCol(), Row.MissingCellPolicy.CREATE_NULL_AS_BLANK) != null) {
-                    Cell cell1 = row1.getCell(cellAddr2.getCol());
-                    Data cell1Data = searchData(actualData, data); // Na podstawie zmodyfikowanych danych szukana jest komórka w oryginalnym arkuszu
+            @Override
+            public void run(ITaskMonitor monitor) {
 
-                    if (isModified(data, cell1Data)) {
+                long max = Math.max(actualData.size(), modifiedData.size());
+                monitor.begin("Wyszukiwanie zmienionych komorek", max);
+
+                for (Data data : modifiedData) {
+                    Sheet sheet2 = modified.getSheetAt(data.getSheetIndex());
+                    CellReference cellAddr2 = data.getCellAddr();
+                    Row row2 = sheet2.getRow(cellAddr2.getRow());
+                    Cell cell2 = row2.getCell(cellAddr2.getCol());
+
+                    Sheet sheet1 = actual.getSheetAt(data.getSheetIndex());
+                    Row row1 = sheet1.getRow(cellAddr2.getRow());
+
+                    try {
+                        if (row1.getCell(cellAddr2.getCol(), Row.MissingCellPolicy.CREATE_NULL_AS_BLANK) != null) {
+                            Cell cell1 = row1.getCell(cellAddr2.getCol());
+                            Data cell1Data = searchData(actualData, data); // Na podstawie zmodyfikowanych danych szukana jest komórka w oryginalnym arkuszu
+
+                            if (isModified(data, cell1Data)) {
+                                toColor.add(data);
+                            }
+                        } else {
+                            toColor.add(data);
+                        }
+                    } catch (NullPointerException ignored) {
                         toColor.add(data);
                     }
-                } else {
-                    toColor.add(data);
+                    monitor.worked(1);
                 }
-            } catch (NullPointerException ignored) {
-                toColor.add(data);
+
+                monitor.done();
+
             }
-        }
+        };
+
+        //Wyłączenie koloru paska
+        TaskService.setAnimated(true);
+        TaskService.setAnsiColors(false);
+        TaskService.setTarget(System.err);
+
+        TaskService.run(task);
+
         System.out.println("Searching for removed cells...");
         toColor.addAll(searchRemoved(actualData, modifiedData));
         long time = System.currentTimeMillis()-startTime;
@@ -184,24 +225,42 @@ public class Main {
     }
 
     private static Collection<? extends Data> searchRemoved(List<Data> data1List, List<Data> data2List) {
+
         Collection<Data> diff = new ArrayList<>();
-        for (Data data1 : data1List) {
-            String addr1 = data1.getCellAddr().formatAsString();
-            boolean removed = true;
-            for (Data data2 : data2List) {
-                String addr2 = data2.getCellAddr().formatAsString();
-                if (data1.getSheetIndex() == data2.getSheetIndex()) {
-                    if (addr1.equals(addr2)) {
-                        //diff.add(data2.getCellAddr());
-                        removed = false;
-                        break;
+
+        ITaskRunnable task = new ITaskRunnable() {
+
+            @Override
+            public void run(ITaskMonitor monitor) {
+
+                long max = Math.max(data1List.size(), data2List.size());
+                monitor.begin("Szukanie usunietych danych", max);
+
+                for (Data data1 : data1List) {
+                    String addr1 = data1.getCellAddr().formatAsString();
+                    boolean removed = true;
+                    for (Data data2 : data2List) {
+                        String addr2 = data2.getCellAddr().formatAsString();
+                        if (data1.getSheetIndex() == data2.getSheetIndex()) {
+                            if (addr1.equals(addr2)) {
+                                //diff.add(data2.getCellAddr());
+                                removed = false;
+                                break;
+                            }
+                        }
                     }
+                    if (removed) {
+                        diff.add(data1);
+                    }
+                    monitor.worked(1);
                 }
+
+                monitor.done();
+
             }
-            if (removed) {
-                diff.add(data1);
-            }
-        }
+        };
+        TaskService.run(task);
+
         return diff;
     }
 
