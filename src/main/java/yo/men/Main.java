@@ -7,11 +7,13 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Console;
 import java.util.*;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -27,14 +29,21 @@ public class Main {
             System.out.println("Podaj lokalizacje pliku do porownania: ");
             fileLocation2 = sc.readLine();
         } else {
-            System.err.println("Nie wykryto konsoli. Znaki specjalne moga nie dzialac poprawnie");
-            Scanner scanner = new Scanner(System.in);
+            if (args.length > 0 && Arrays.toString(args).contains("--ignore-console")) {
+                System.err.println("Nie wykryto konsoli. Znaki specjalne moga nie dzialac poprawnie\n");
 
-            System.out.println("Podaj lokalizacje pliku bazowego: ");
-            fileLocation = scanner.nextLine();
+                Scanner scanner = new Scanner(System.in);
 
-            System.out.println("Podaj lokalizacje pliku do porownania: ");
-            fileLocation2 = scanner.nextLine();
+                System.out.println("Podaj lokalizacje pliku bazowego: ");
+                fileLocation = scanner.nextLine();
+
+                System.out.println("Podaj lokalizacje pliku do porownania: ");
+                fileLocation2 = scanner.nextLine();
+            } else {
+                JOptionPane.showMessageDialog(null, "Nie wykryto konsoli. Uruchom program z konsoli lub korzystajac ze skryptu uruchamiajacego.", "Blad konsoli | github.com/BestInTest/Excel-porownywarka", JOptionPane.ERROR_MESSAGE);
+                System.exit(1);
+                return;
+            }
         }
 
         long startTime = System.currentTimeMillis();
