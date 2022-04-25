@@ -23,3 +23,7 @@ Bezpośrednie uruchomienie (kliknięciem na ikonę) skutkuje błędem o braku ko
 ```bash
 java -jar Excel-porownywarka-1.1.jar --ignore-console
 ```
+## Wymagania
+- Wymagana Java 8 lub nowsza
+- W przypadku dużych plików program może pochłonąć duże ilości pamięci RAM (1+ GB)
+- Szybkość porównywania plików zależy w głównej mierze od szybkości pojedynczego wątku procesora
