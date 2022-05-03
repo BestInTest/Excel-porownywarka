@@ -166,6 +166,10 @@ public class Main {
                 modified.setSheetName(data.getSheetIndex(), data.getSheetName());
                 CellReference cellAddr2 = data.getCellAddr();
                 Row row2 = sheet2.getRow(cellAddr2.getRow());
+                if (row2 == null) {
+                    sheet2.createRow(cellAddr2.getRow());
+                    row2 = sheet2.getRow(cellAddr2.getRow());
+                }
 
                 Cell cell2 = row2.getCell(cellAddr2.getCol(), Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
                 /*
