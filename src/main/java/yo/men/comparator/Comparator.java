@@ -8,6 +8,7 @@ import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import yo.men.Main;
 
+import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -198,6 +199,9 @@ public class Comparator {
             modified.close();
         } else {
             System.out.println("Arkusze są identyczne");
+            if (!cli) {
+                JOptionPane.showMessageDialog(null, "Nie znaleziono zmian. Arkusze są identyczne.", "Ukończono", JOptionPane.INFORMATION_MESSAGE);
+            }
         }
     }
 
