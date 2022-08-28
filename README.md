@@ -5,13 +5,19 @@ Program służy do porównywania plików Excel - wyznaczania modyfikacji, usuni�
 Przed rozpoczęciem porównywania należy zrobić kopię zapasową porównywanych plików.
 
 ## Uruchamianie
-Program jest przeznaczony do używania poprzez konsolę. Aby go uruchomić musimy użyć polecenia:
+Od wersji 1.2 program posiada 2 tryby pracy: konsolowy (CLI) oraz okienkowy (GUI).
+Aby go uruchomić w trybie okienkowym wystaczy standardowo nacisnąć dwa razy na ikonę. Alternatywnie można użyć komendy z konsoli bez dodania dodatkowych argumentów:
 
 ```bash
-java -jar Excel-porownywarka-1.1.jar
+java -jar Excel-porownywarka-1.2.jar
 ```
 
-Zalecane jest utworzenie skryptu uruchomieniowego (np. start.bat):
+Aby uruchomić program w trybie konsoli (CLI) należy dodać `--cli` do komendy startowej:
+```bash
+java -jar Excel-porownywarka-1.2.jar --cli
+```
+
+Dla wersji starszych niż 1.2 zalecane jest utworzenie skryptu uruchomieniowego (np. start.bat dla Windowsa):
 ```bash
 @ECHO OFF
 java -jar Excel-porownywarka-1.1.jar
@@ -19,9 +25,9 @@ PAUSE
 ```
 
 
-Bezpośrednie uruchomienie (kliknięciem na ikonę) skutkuje błędem o braku konsoli. Jeżeli błąd występuje przy uruchamianiu komendą lub przy pomocy np. IDE, należy dodać flagę `--ignore-console` do komendy startowej
+Jeżeli masz problem z uruchomieniem programu w konsoli lub przy pomocy np. IDE, należy dodać flagę `--cli` oraz `--ignore-console` do komendy startowej
 ```bash
-java -jar Excel-porownywarka-1.1.jar --ignore-console
+java -jar Excel-porownywarka-1.2.jar --cli --ignore-console
 ```
 ## Wymagania
 - Java 8 lub nowsza
