@@ -5,8 +5,6 @@ import yo.men.comparator.Comparator;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 
 public class MainFrame extends JFrame {
     private JPanel mainPanel;
@@ -72,7 +70,8 @@ public class MainFrame extends JFrame {
                 if (firstFile != null && secondFile != null) {
                     try {
                         Comparator.compare(firstFile, secondFile, false);
-                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(null, "Zakończono porównywanie.\nZmiany zostały naniesione w pliku " + secondFile, "Ukończono", JOptionPane.INFORMATION_MESSAGE);
+                    } catch (Exception ex) {
                         JOptionPane.showMessageDialog(null, "Podczas pracy programu wystąpił błąd: " + ex.getMessage(), "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
                         throw new RuntimeException(ex);
                     }
