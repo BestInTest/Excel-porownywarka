@@ -8,7 +8,6 @@ import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import yo.men.Main;
 
-import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -164,6 +163,7 @@ public class Comparator {
 
         System.out.println("Searching for removed cells...");
         toColor.addAll(searchRemoved(actualData, modifiedData, cli));
+
         long time = System.currentTimeMillis()-startTime;
         System.out.println("\nDetected " + toColor.size() + " modified cells in " + time + " ms");
 
@@ -217,7 +217,6 @@ public class Comparator {
     private static Collection<? extends Data> searchRemoved(List<Data> data1List, List<Data> data2List, boolean cli) {
 
         Collection<Data> diff = new ArrayList<>();
-        long max = Math.max(data1List.size(), data2List.size());
 
         if (cli) {
             ITaskRunnable task = new ITaskRunnable() {
@@ -225,6 +224,7 @@ public class Comparator {
                 @Override
                 public void run(ITaskMonitor monitor) {
 
+                    long max = Math.max(data1List.size(), data2List.size());
                     monitor.begin("Szukanie usunietych danych", max);
 
                     for (Data data1 : data1List) {
@@ -252,6 +252,7 @@ public class Comparator {
             };
             TaskService.run(task);
         } else {
+            long max = Math.max(data1List.size(), data2List.size()) * 2L; // mnożenie x2 dlatego że jest 1 progeressbar w gui, a 2 taski
             long worked = 0;
             int progress = Main.getGui().getProgressBar().getValue();
             for (Data data1 : data1List) {

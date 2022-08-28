@@ -30,7 +30,7 @@ public class MainFrame extends JFrame {
         btnSelectFirstFile.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
+                JFileChooser fileChooser = new JFileChooser(".");
 
                 int result = fileChooser.showOpenDialog(null);
 
@@ -44,7 +44,7 @@ public class MainFrame extends JFrame {
         btnSelectSecondFile.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
+                JFileChooser fileChooser = new JFileChooser(".");
 
                 int result = fileChooser.showOpenDialog(null);
 
@@ -62,19 +62,27 @@ public class MainFrame extends JFrame {
                 lbFirstFile.setText("Wybierz pierwszy plik");
                 secondFile = null;
                 lbSecondFile.setText("Wybierz drugi plik");
+                progressBar.setValue(0);
             }
         });
         btnCompare.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (firstFile != null && secondFile != null) {
-                    try {
-                        Comparator.compare(firstFile, secondFile, false);
-                        JOptionPane.showMessageDialog(null, "Zakończono porównywanie.\nZmiany zostały naniesione w pliku " + secondFile, "Ukończono", JOptionPane.INFORMATION_MESSAGE);
-                    } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(null, "Podczas pracy programu wystąpił błąd: " + ex.getMessage(), "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
-                        throw new RuntimeException(ex);
-                    }
+
+                    Thread th = new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                Comparator.compare(firstFile, secondFile, false);
+                                JOptionPane.showMessageDialog(null, "Zakończono porównywanie.\nZmiany zostały naniesione w pliku " + secondFile, "Ukończono", JOptionPane.INFORMATION_MESSAGE);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                                JOptionPane.showMessageDialog(null, "Podczas pracy programu wystąpił błąd:\n" + ex.getMessage(), "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
+                            }
+                        }
+                    };
+                    th.start();
                 } else {
                     if (firstFile == null) {
                         JOptionPane.showMessageDialog(null, "Nie wybrano pierwszego pliku", "Nie odnaleziono pliku", JOptionPane.ERROR_MESSAGE);
