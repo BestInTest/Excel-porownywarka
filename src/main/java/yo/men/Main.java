@@ -54,7 +54,7 @@ public class Main {
             } else {
                 gui = new MainFrame();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

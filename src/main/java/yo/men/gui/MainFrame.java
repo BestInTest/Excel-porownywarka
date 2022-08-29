@@ -19,12 +19,13 @@ public class MainFrame extends JFrame {
     private String firstFile;
     private String secondFile;
 
-    public MainFrame() {
+    public MainFrame() throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         setContentPane(mainPanel);
         setTitle("Excel porównywarka");
         setSize(450, 300);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         setVisible(true);
 
         btnSelectFirstFile.addActionListener(new ActionListener() {
@@ -76,12 +77,20 @@ public class MainFrame extends JFrame {
                             try {
                                 Comparator.compare(firstFile, secondFile, false);
                                 JOptionPane.showMessageDialog(null, "Zakończono porównywanie.\nZmiany zostały naniesione w pliku " + secondFile, "Ukończono", JOptionPane.INFORMATION_MESSAGE);
+                                btnCompare.setEnabled(true);
+                                btnClear.setEnabled(true);
+                                btnSelectFirstFile.setEnabled(true);
+                                btnSelectSecondFile.setEnabled(true);
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                                 JOptionPane.showMessageDialog(null, "Podczas pracy programu wystąpił błąd:\n" + ex.getMessage(), "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
                             }
                         }
                     };
+                    btnCompare.setEnabled(false);
+                    btnClear.setEnabled(false);
+                    btnSelectFirstFile.setEnabled(false);
+                    btnSelectSecondFile.setEnabled(false);
                     th.start();
                 } else {
                     if (firstFile == null) {
