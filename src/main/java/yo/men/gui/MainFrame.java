@@ -84,6 +84,10 @@ public class MainFrame extends JFrame {
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                                 JOptionPane.showMessageDialog(null, "Podczas pracy programu wystąpił błąd:\n" + ex.getMessage(), "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
+                                btnCompare.setEnabled(true);
+                                btnClear.setEnabled(true);
+                                btnSelectFirstFile.setEnabled(true);
+                                btnSelectSecondFile.setEnabled(true);
                             }
                         }
                     };
