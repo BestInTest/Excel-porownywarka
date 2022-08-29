@@ -19,13 +19,12 @@ public class MainFrame extends JFrame {
     private String firstFile;
     private String secondFile;
 
-    public MainFrame() throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public MainFrame() {
         setContentPane(mainPanel);
         setTitle("Excel porównywarka");
         setSize(450, 300);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         setVisible(true);
 
         btnSelectFirstFile.addActionListener(new ActionListener() {
