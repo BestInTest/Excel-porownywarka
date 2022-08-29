@@ -27,7 +27,7 @@ PAUSE
 
 Jeżeli masz problem z uruchomieniem programu w konsoli lub przy pomocy np. IDE, należy dodać flagę `--cli` oraz `--ignore-console` do komendy startowej
 ```bash
-java -jar Excel-porownywarka-1.2.jar --cli --ignore-console
+java -jar Excel-porownywarka-1.2.2.jar --cli --ignore-console
 ```
 ## Wymagania
 - Java 8 lub nowsza
