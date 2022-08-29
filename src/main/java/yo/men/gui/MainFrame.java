@@ -76,12 +76,24 @@ public class MainFrame extends JFrame {
                             try {
                                 Comparator.compare(firstFile, secondFile, false);
                                 JOptionPane.showMessageDialog(null, "Zakończono porównywanie.\nZmiany zostały naniesione w pliku " + secondFile, "Ukończono", JOptionPane.INFORMATION_MESSAGE);
+                                btnCompare.setEnabled(true);
+                                btnClear.setEnabled(true);
+                                btnSelectFirstFile.setEnabled(true);
+                                btnSelectSecondFile.setEnabled(true);
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                                 JOptionPane.showMessageDialog(null, "Podczas pracy programu wystąpił błąd:\n" + ex.getMessage(), "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
+                                btnCompare.setEnabled(true);
+                                btnClear.setEnabled(true);
+                                btnSelectFirstFile.setEnabled(true);
+                                btnSelectSecondFile.setEnabled(true);
                             }
                         }
                     };
+                    btnCompare.setEnabled(false);
+                    btnClear.setEnabled(false);
+                    btnSelectFirstFile.setEnabled(false);
+                    btnSelectSecondFile.setEnabled(false);
                     th.start();
                 } else {
                     if (firstFile == null) {
