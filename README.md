@@ -9,12 +9,12 @@ Od wersji 1.2 program posiada 2 tryby pracy: konsolowy (CLI) oraz okienkowy (GUI
 Aby go uruchomić w trybie okienkowym wystaczy standardowo nacisnąć dwa razy na ikonę. Alternatywnie można użyć komendy z konsoli bez dodania dodatkowych argumentów:
 
 ```bash
-java -jar Excel-porownywarka-1.2.jar
+java -jar Excel-porownywarka-1.2.2.jar
 ```
 
 Aby uruchomić program w trybie konsoli (CLI) należy dodać `--cli` do komendy startowej:
 ```bash
-java -jar Excel-porownywarka-1.2.jar --cli
+java -jar Excel-porownywarka-1.2.2.jar --cli
 ```
 
 Dla wersji starszych niż 1.2 zalecane jest utworzenie skryptu uruchomieniowego (np. start.bat dla Windowsa):
